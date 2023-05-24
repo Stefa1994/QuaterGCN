@@ -259,7 +259,7 @@ def DSBM(p_in, p_inter, p_q, sizes, cluster, undirected_percentage, opposite_sig
     _, A, label = desymmetric_stochastic(sizes = sizes, probs = prob, off_diag_prob = p_q, seed=seed, undirected_percentage = undirected_percentage, opposite_sign = opposite_sign, \
                                         negative_edges = negative_edges, directed=directed)
     
-    data = to_dataset(A, label, save_path = '../data/fake_for_quaternion_new/dataset_nodes' + str(sizes[0])  + '_alpha' + str(p_inter)+ '_beta' + str(round(1-p_q, 2)) 
+    data = to_dataset(A, label, save_path = '../data/synthetic_digons/dataset_nodes' + str(sizes[0])  + '_alpha' + str(p_inter)+ '_beta' + str(round(1-p_q, 2)) 
                       + '_undirected-percentage' + str(undirected_percentage) + '_opposite-sign' + str(opposite_sign) +  '_negative-edges' + str(negative_edges) 
                       + '_directed' + str(directed) + '.pk')
 

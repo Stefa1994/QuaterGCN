@@ -71,7 +71,7 @@ def main(args):
         try:
             data = pk.load(open(f'./data/fake/{args.dataset}.pk','rb'))
         except:
-            data = pk.load(open(f'./data/fake_for_quaternion_new/{args.dataset}.pk','rb'))
+            data = pk.load(open(f'./data/synthetic_digons/{args.dataset}.pk','rb'))
         data = node_class_split(data, train_size_per_class=0.6, val_size_per_class=0.2)
     else:
         load_func, subset = args.dataset.split('/')[0], args.dataset.split('/')[1]

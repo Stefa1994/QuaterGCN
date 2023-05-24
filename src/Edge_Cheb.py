@@ -82,7 +82,7 @@ def main(args):
             try:
                 data = pk.load(open(f'./data/fake/{args.dataset}.pk','rb'))
             except:
-                data = pk.load(open(f'./data/fake_for_quaternion_new/{args.dataset}.pk','rb'))
+                data = pk.load(open(f'./data/synthetic_digons/{args.dataset}.pk','rb'))
             data = data.to(device)
         subset = args.dataset
     else:

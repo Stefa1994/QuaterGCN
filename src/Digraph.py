@@ -70,7 +70,7 @@ def main(args):
         try:
             data = pk.load(open(f'./data/fake/{args.dataset}.pk','rb'))
         except:
-            data = pk.load(open(f'./data/fake_for_quaternion_new/{args.dataset}.pk','rb'))
+            data = pk.load(open(f'./data/synthetic_digons/{args.dataset}.pk','rb'))
         data = node_class_split(data, train_size_per_class=0.6, val_size_per_class=0.2)
     else:
         data = load_directed_real_data(dataset=dataset_name[0], name=dataset_name[0])#.to(device)
