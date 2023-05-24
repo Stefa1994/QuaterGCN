@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument('--task', type=str, default='direction', help='Task')
     
     parser.add_argument('--epochs', type=int, default=1500, help='training epochs')
-    parser.add_argument('--num_filter', type=int, default=4, help='num of filters')
+    parser.add_argument('--num_filter', type=int, default=64, help='num of filters')
     parser.add_argument('--method_name', type=str, default='QuaNet', help='method name')
     parser.add_argument('--qua_weights', '-W', action='store_true', help='quaternion weights option')
     parser.add_argument('--qua_bias', '-B', action='store_true', help='quaternion bias options')
