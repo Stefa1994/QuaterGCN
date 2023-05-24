@@ -82,8 +82,7 @@ def get_Quaternion_Laplacian(edge_index: torch.LongTensor, edge_weight: Optional
     # retrieval directed edges with no antiparallel
     operation = (scipy.sparse.csr_matrix.sign(np.abs(A) - np.abs(A.T)))*1j
     
-    # degree 0.5*(|A| + |A.T|)
-    deg = np.array((0.5*(np.abs(A) + np.abs(A.T))).sum(axis=0))[0] 
+    deg = np.array(np.abs(A_sym).sum(axis=0))[0] # out degree
 
     if normalization is None:
         D = coo_matrix((deg, (np.arange(size), np.arange(size))), shape=(size, size), dtype=np.float32)
