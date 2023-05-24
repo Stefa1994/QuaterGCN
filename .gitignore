@@ -1,0 +1,8 @@
+src/node_classification_magnet.py
+src/sparse_Magnet_modificato.py
+processed/
+raw/
+variant_for_test/
+data/fake_for_quaternion
+generative_graph/generate_synthetic_data_without_antiparallel.py
+link_prediction_command/
