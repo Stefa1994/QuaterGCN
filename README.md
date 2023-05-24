@@ -1,6 +1,6 @@
 # Graph Learning in 4D: a Quaternion-valued Laplacian to Enhance Spectral GCNs
 
-This repository is the offical PyTorch implementation of QuaNet: both its implementation and code for running other convolutional graph networks is present.
+This repository is the offical PyTorch implementation of QuaterGCN: both its implementation and code for running other convolutional graph networks is present.
 
 ## Enviroment Setup
 The experiments were conducted under this specific environment:
