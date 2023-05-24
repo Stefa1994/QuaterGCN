@@ -1,5 +1,7 @@
+'''
+Code for creating digraph with antiparallel edges
+'''
 
-# Inserire il concetto di random nel modello e le opzioni che trovo segnate sull'ipad
 
 from typing import Tuple
 import math
@@ -17,46 +19,6 @@ import networkx as nx
 import numpy as np
 from scipy.sparse import coo_matrix, triu
 import scipy
-
-# Creation of subdivision edges
-def add_edges(G, n_rows, biconnections, dictionary, i):
-    G.add_weighted_edges_from([(biconnections[i][0],  biconnections[i][1], dictionary[biconnections[i]]),
-                               ( biconnections[i][1], biconnections[i][0], dictionary[biconnections[i+1]])])
-    return G
-
-# identification of antiparallel edges
-def have_bidirectional_relationship(G, node1, node2):
-    return G.has_edge(node1, node2) and G.has_edge(node2, node1)
-
-# list of antiparalell edges
-def biconnection(graph):
-    biconnections= []
-    for u, v in graph.edges():
-        if u != v: # Avoid self_loop
-            if u > v:  # Avoid duplicates, such as (1, 2) and (2, 1)
-                #v, u = u, v
-                continue
-            if have_bidirectional_relationship(graph, u, v):
-                biconnections.append((u,v))
-                biconnections.append((v,u))
-    return biconnections
-
-# Creation of a dictionary with initial node and weight indication
-def dictionary_connection(graph):
-    dictionary = {(node1,node2) : data['weight'] for node1, node2, data in graph.edges(data=True)}
-    return dictionary
-
-# Creation of the subdivision graph
-def flipping(graph):
-    graph_1 = nx.from_scipy_sparse_matrix(graph, create_using=nx.DiGraph)
-    graph_bidirectional = nx.from_scipy_sparse_matrix(coo_matrix((graph_1.number_of_nodes(), graph_1.number_of_nodes()), 
-                                               dtype=np.int8), create_using=nx.DiGraph)
-    dictionary = dictionary_connection(graph_1)
-    biconnections = biconnection(graph_1)
-    A = nx.to_scipy_sparse_matrix(graph_1)
-    n_rows = A.shape[0]
-    lista = [add_edges(graph_bidirectional, n_rows, biconnections,dictionary, i) for i in range(0, len(biconnections),2)]
-    return nx.to_scipy_sparse_matrix(graph_bidirectional)
 
 
 @py_random_state(3)
@@ -118,7 +80,6 @@ def stochastic_block_model_2(
     for i, j in block_iter:
         if i == j:
             if directed:
-                #print('sono nei directed')
                 if selfloops:
                     edges = itertools.product(parts[i], parts[i])
                 else:
@@ -133,19 +94,16 @@ def stochastic_block_model_2(
                         value = randint(-4, 4)
                     else:
                         value = randint(2, 4) # Nuovi valori
-                    #value = 5 #random.randrange(50, 5000, 50) #randint(1000, 5000)
                     g.add_edge(*e, weight=value)  # __safe
         else:
             edges = itertools.product(parts[i], parts[j])
         if sparse:
-            # Qui ho
             if p[i][j] == 1:  # Test edges cases p_ij = 0 or 1
                 for e in edges:
                     if negative_edges:
                         value = randint(-4, 4)
                     else:
                         value = randint(2, 4) # Nuovi valori
-                    #value = 10 #random.randrange(50, 5000, 50)
                     g.add_edge(*e, weight=value)  # __safe
             elif p[i][j] > 0:
                 while True:
@@ -159,7 +117,6 @@ def stochastic_block_model_2(
                             value = randint(-4, 4)
                         else:
                             value = randint(2, 4) # Nuovi valori
-                        #value = 2 #random.randrange(50, 5000, 50)
                         g.add_edge(*e, weight=value)  # __safe
                     except StopIteration:
                         break
@@ -170,7 +127,6 @@ def stochastic_block_model_2(
                         value = randint(-4, 4)
                     else:
                         value = randint(2, 1000) # Nuovi valori
-                    #value = 45 #random.randrange(50, 5000, 50)
                     g.add_edge(*e, weight=value)  # __safe
     return g
 
@@ -223,18 +179,13 @@ def desymmetric_stochastic(sizes = [100, 100, 100],
     g = stochastic_block_model_2(sizes, probs, seed=seed, directed=directed, negative_edges =negative_edges)
     original_A = nx.adjacency_matrix(g).todense()
     A = original_A.copy()
-    print('archi antiparalleli')
-    #print(flipping(coo_matrix(A)).todense())
-    #print(flipping(coo_matrix(A)).todense())
+    
     # for blocks represent adj within clusters --> elimino tutti collegamenti undirected
     accum_size = 0
     B = np.zeros((A.shape[0], A.shape[0]), int)
     B_first = B.copy()
     value = 0
-    #print('sizes', sizes)
     for s in sizes:
-        #np.where(np.triu(original_A[accum_size:s+accum_size,accum_size:s+accum_size]))
-        # Questo serve solo per prendere entrambi i triangoli e diversificare le direzioni
         if value%2 == 0:
             x, y = np.where(np.triu(original_A[accum_size:s+accum_size,accum_size:s+accum_size]))
         else:            
@@ -244,20 +195,17 @@ def desymmetric_stochastic(sizes = [100, 100, 100],
         value += 1
     x, y = np.where(B_first)
     x1, x2, y1, y2 = train_test_split(x, y, test_size=undirected_percentage)
-    #print(x1, x2, y1, y2)
     A[x1, y1] = 0 # remove a portion of antiparalell edges
 
-    # Questo flag permette di assegnare un peso opposto a determinati elementi
+    # This flag allows assigning an opposite weight to certain elements
     if opposite_sign:
         A[y2, x2] = - A[x2, y2]    
 
-    #print(flipping(coo_matrix(A)).todense())
 
     # for blocks represent adj out of clusters (cluster2cluster edges)
     accum_x, accum_y = 0, 0
     n_cluster = len(sizes)
     
-    #print(flipping(coo_matrix(A)).todense())
     for i in range(n_cluster):
         accum_y = accum_x + sizes[i]
         for j in range(i+1, n_cluster):
@@ -268,24 +216,23 @@ def desymmetric_stochastic(sizes = [100, 100, 100],
     B_new = B + B.T
     x, y = np.where(B_new)
 
-    # Questa prima operazione serve a tenere gli edges undirected e quelli che invece si considerano directed
+    # This initial operation aims to preserve undirected edges while treating the others as directed.
     x1, x2, y1, y2 =  train_test_split(x, y, test_size=undirected_percentage)
 
-    # Questo flag permette di assegnare un peso opposto a determinati elementi
+    # It enables the assignment of a weight with an opposite value
     if opposite_sign:
         A[y2, x2] = - A[x2, y2]    
     
-    # Tolgo tutti gli undirected edges
+    # Remove all the undirected edges
     B_new[x2, y2] = 0
     B_new[y2, x2] = 0
     
-    # Mi occupo delle connesioni direzionate e scelto la direzione del flusso 
+    # The direction of flow is determined for the directed connections
     accum_x, accum_y = 0, 0
     for i in range(n_cluster):
         accum_y = accum_x + sizes[i]
         for j in range(i+1, n_cluster):
             x3, y3 = np.where(B_new[accum_x:sizes[i]+accum_x, accum_y:sizes[j]+accum_y])
-            #print(len(x3))
             x4, x5, y4, y5 = train_test_split(x3, y3, test_size=off_diag_prob)
             A[x4+accum_x, y4+accum_y] = 0
             A[y5+accum_y, x5+accum_x] = 0
@@ -295,31 +242,23 @@ def desymmetric_stochastic(sizes = [100, 100, 100],
         accum_x += sizes[i]
 
 
-    
-    #print(flipping(coo_matrix(A)).todense())        
-    #print(A -flipping(coo_matrix(A)).todense())
-    #print(A)
-    #exit()
+
     # label assignment based on parameter sizes 
     label = []
     for i, s in enumerate(sizes):
         label.extend([i]*s)
     label = np.array(label)
-    #print(label)
-    #print(flipping(coo_matrix(A)).todense())
-    #exit()
+  
     return np.array(original_A), np.array(A), label
 
 def DSBM(p_in, p_inter, p_q, sizes, cluster, undirected_percentage, opposite_sign, negative_edges, directed):
-  #print(p_in)
+ 
   prob = np.diag([p_in]*cluster)
   prob[prob == 0] = p_inter
-  #print(prob)
-  for seed in [10]:#, 10, 20, 30, 40]:
+  for seed in [10]:
     _, A, label = desymmetric_stochastic(sizes = sizes, probs = prob, off_diag_prob = p_q, seed=seed, undirected_percentage = undirected_percentage, opposite_sign = opposite_sign, \
                                         negative_edges = negative_edges, directed=directed)
-    #print('eccooo', A)
-   
+    
     data = to_dataset(A, label, save_path = '../data/fake_for_quaternion_new/dataset_nodes' + str(sizes[0])  + '_alpha' + str(p_inter)+ '_beta' + str(round(1-p_q, 2)) 
                       + '_undirected-percentage' + str(undirected_percentage) + '_opposite-sign' + str(opposite_sign) +  '_negative-edges' + str(negative_edges) 
                       + '_directed' + str(directed) + '.pk')
@@ -329,22 +268,14 @@ if __name__ == "__main__":
     node = 150
     cluster = 5
     sizes = [node]*cluster
-    for a in [True]:
-        opposite_sign = False
-        negative_edges = False
-        directed = a
-        p_in = 0.1 # collegamento tra elementi interni allo stesso cluster
-        # Collegamento tra i diversi cluster del modello (p-inter)
-        for p_undirected in [#0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8
-        #0.2, 0.5, 0.7
-        0.01]:
-            undirected_percentage = p_undirected
-            for p_inter in [0.2
-                            #, 0.1, 0.05
-                            ]: 
-            # Probability della direzione del flusso a --> b and b --> a
-                for p_q in [#0.95 , 
-                0.8, #0.85,0.8, #0.75, 0.7, 0.65, 
-                #0.5
-                    ]:
-                    DSBM(p_in, p_inter, p_q, sizes, cluster, undirected_percentage, opposite_sign, negative_edges, directed)
+    opposite_sign = False
+    negative_edges = False
+    directed = True
+    p_in = 0.1 # collegamento tra elementi interni allo stesso cluster
+    # Collegamento tra i diversi cluster del modello (p-inter)
+    for p_undirected in [0.2, 0.5, 0.7]:
+        undirected_percentage = p_undirected
+        for p_inter in [0.1]: 
+        # Probability della direzione del flusso a --> b and b --> a
+            for p_q in [0.8]:
+                DSBM(p_in, p_inter, p_q, sizes, cluster, undirected_percentage, opposite_sign, negative_edges, directed)
