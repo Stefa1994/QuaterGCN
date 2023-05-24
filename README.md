@@ -28,8 +28,8 @@ The repository contains three folders:
 
 ```
 cd src
-python3 node_SigMaNet.py --dataset dataset_nodes500_alpha0.05_beta0.2
-python3 Edge_SigMaNet.py --dataset dataset_nodes500_alpha0.05_beta0.2 --task direction --noisy
+python3 QuaterGCN.py --dataset dataset_nodes500_alpha0.05_beta0.2
+python3 Edge_QuaterGCN.py --dataset dataset_nodes500_alpha0.05_beta0.2 --task three_class_digraph --noisy
 ```
 
 
