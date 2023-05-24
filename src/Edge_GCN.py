@@ -79,7 +79,7 @@ def main(args):
             data = load_signed_real_data_no_negative(dataset=args.dataset).to(device)
         else:
             try:
-                data = pk.load(open(f'./data/fake/{args.dataset}.pk','rb'))
+                data = pk.load(open(f'./data/synthetic/{args.dataset}.pk','rb'))
             except:
                 data = pk.load(open(f'./data/synthetic_digons/{args.dataset}.pk','rb'))
             data = data.to(device)

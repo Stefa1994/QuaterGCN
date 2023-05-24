@@ -195,7 +195,7 @@ def DSBM(p_in, p_inter, p_q, sizes, cluster):
   print(prob)
   for seed in [10]:#, 10, 20, 30, 40]:
     _, A, label = desymmetric_stochastic(sizes = sizes, probs = prob, off_diag_prob = p_q, seed=seed)
-    data = to_dataset(A, label, save_path = 'data/fake/dataset_nodes' + str(sizes[0])  + '_alpha' + str(p_inter)+ '_alpha1'+ str(p_in) +'_beta' + str(round(1-p_q, 2)) + '_cluster' + str(cluster) +'_rewier_' '.pk')
+    data = to_dataset(A, label, save_path = 'data/synthetic/dataset_nodes' + str(sizes[0])  + '_alpha' + str(p_inter)+ '_alpha1'+ str(p_in) +'_beta' + str(round(1-p_q, 2)) + '_cluster' + str(cluster) +'_rewier_' '.pk')
 
 
 if __name__ == "__main__":

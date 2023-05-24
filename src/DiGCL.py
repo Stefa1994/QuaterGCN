@@ -147,7 +147,7 @@ if os.path.isdir(log_path) == False:
 dataset_name = args.dataset.split('/')
 if dataset_name[0] != 'telegram':
     try:
-        data = pk.load(open(f'./data/fake/{args.dataset}.pk','rb'))
+        data = pk.load(open(f'./data/synthetic/{args.dataset}.pk','rb'))
     except FileNotFoundError:
         data = pk.load(open(f'./data/synthetic_digons/{args.dataset}.pk','rb'))
     data = node_class_split(data, train_size_per_class=0.6, val_size_per_class=0.2)

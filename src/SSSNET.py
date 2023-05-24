@@ -96,7 +96,7 @@ if os.path.isdir(log_path) == False:
 dataset_name = args.dataset.split('/')
 if len(dataset_name) == 1:
     try:
-        data = pk.load(open(f'./data/fake/{args.dataset}.pk','rb'))
+        data = pk.load(open(f'./data/synthetic/{args.dataset}.pk','rb'))
     except:
         data = pk.load(open(f'./data/synthetic_digons/{args.dataset}.pk','rb'))
     data = node_class_split(data, train_size_per_class=0.6, val_size_per_class=0.2, seed_size_per_class=0.1)
