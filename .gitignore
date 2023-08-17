@@ -13,3 +13,4 @@ result_arrays_sign/
 *.zip
 *.bash
 sign_link_prediction_2.py
+__pycache__/
