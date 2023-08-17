@@ -15,21 +15,21 @@ from torch_geometric_signed_directed.utils import link_class_split, in_out_degre
 from torch_geometric_signed_directed.data import load_signed_real_data, SignedData
 from torch_geometric_signed_directed.nn.signed import SGCN, SDGNN, SiGAT, SNEA
 #from torch_geometric_signed_directed.utils.signed import link_sign_prediction_logistic_function
-from src.utils.edge_data_new import link_class_split_new
+from utils.edge_data_new import link_class_split_new
 import random
 from scipy.sparse import coo_matrix
 import torch.nn.functional as F
-from src.utils.edge_data import read_edge_list_2, read_edge_list
+from utils.edge_data import read_edge_list_2, read_edge_list
 
 
-from src.layer.MSGNN import MSGNN_link_prediction
-from src.layer.Signum_quaternion import QuaNet_link_prediction_one_laplacian
-from src.layer.src2 import quaternion_laplacian
-from src.layer.SSSNET_link_prediction import SSSNET_link_prediction
+from layer.MSGNN import MSGNN_link_prediction
+from layer.Signum_quaternion import QuaNet_link_prediction_one_laplacian
+from layer.src2 import quaternion_laplacian
+from layer.SSSNET_link_prediction import SSSNET_link_prediction
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(
         __file__)), 'SigMaNet'))
-from src.layer.Signum import SigMaNet_link_prediction_one_laplacian
-from src.layer.src2 import laplacian
+from layer.Signum import SigMaNet_link_prediction_one_laplacian
+from layer.src2 import laplacian
 import argparse
 
 def parameter_parser():
