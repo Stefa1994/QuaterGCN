@@ -2,28 +2,28 @@ import torch
 import pickle as pk
 import networkx as nx
 from scipy.sparse import coo_matrix
+from scipy import sparse
 from torch_geometric.data import Data
+from torch_geometric_signed_directed.data.signed import SignedData
 from torch import Tensor
 from torch_sparse import SparseTensor, coalesce
 #from stellargraph.data import EdgeSplitter
 from sklearn.model_selection import train_test_split
-from torch_geometric.utils import negative_sampling, dropout_adj, to_undirected
+from torch_geometric.utils import negative_sampling
 from torch_geometric.data import Data
-from torch_geometric.utils import is_undirected, to_networkx
-from networkx.algorithms.components import is_weakly_connected
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from torch_geometric.utils import add_remaining_self_loops, add_self_loops, remove_self_loops
 from torch_scatter import scatter_add
 import scipy
 import os
-from joblib import Parallel, delayed
-from typing import Union, List, Tuple
+from typing import Union, List
 import torch
 import scipy
 import numpy as np
 from networkx.algorithms import tree
 import torch_geometric
 from scipy.sparse import coo_matrix
+import pandas as pd
 
 
 from typing import Optional, Callable, Union, List
@@ -33,7 +33,7 @@ from torch_geometric_signed_directed.data import SignedDirectedGraphDataset
 from torch_geometric_signed_directed.data import SSSNET_real_data
 from torch_geometric_signed_directed.data import SignedData
 
-def negative_remove(data, double, constant):
+def negative_remove(data, double=False, constant=0):
     edge_index = data.edge_index
     row, col = edge_index[0], edge_index[1]
     size = int(max(torch.max(row), torch.max(col))+1)
@@ -749,3 +749,37 @@ def link_prediction_evaluation(out_test, y_test):
     test_f1_macro = f1_score(pred_label, y_test, average='macro')
     test_f1_micro = f1_score(pred_label, y_test, average='micro')
     return test_acc_full, test_acc, test_auc, test_f1_micro, test_f1_macro
+
+def read_edge_list(path):
+    """
+    Load edges from a txt file.
+    """
+    G = nx.DiGraph()
+    edges = pd.read_csv(path, usecols = ['source',' target', ' vote'],  encoding='utf-8')
+    edges = edges.groupby(['source', ' target'])[' vote'].sum().reset_index()
+    for i in range(edges.shape[0]):
+        G.add_edge(int(edges.iloc[i][0]), int(edges.iloc[i][1]), weight=edges.iloc[i][2])
+    A1 = nx.adjacency_matrix(G)
+    s_A = sparse.csr_matrix(A1)
+    coo = s_A.tocoo()
+    indices = np.vstack((coo.row, coo.col))
+    indices = torch.from_numpy(indices).long()
+    data = Data(edge_index=indices, edge_weight=torch.from_numpy(coo.data), num_nodes =  max(G.nodes) + 1)
+    return data
+
+def read_edge_list_2(path):
+    """
+    Load edges from a txt file.
+    """
+    G = nx.DiGraph()
+    edges = pd.read_csv(path, usecols = ['source',' target', ' vote'],  encoding='utf-8')
+    edges = edges.groupby(['source', ' target'])[' vote'].sum().reset_index()
+    for i in range(edges.shape[0]):
+        G.add_edge(int(edges.iloc[i][0]), int(edges.iloc[i][1]), weight=edges.iloc[i][2])
+    A1 = nx.adjacency_matrix(G)
+    s_A = sparse.csr_matrix(A1)
+    coo = s_A.tocoo()
+    indices = np.vstack((coo.row, coo.col))
+    indices = torch.from_numpy(indices).long()
+    data = SignedData(edge_index=indices, edge_weight=torch.from_numpy(coo.data), num_nodes =  max(G.nodes) + 1)
+    return data
