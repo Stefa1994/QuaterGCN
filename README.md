@@ -30,8 +30,8 @@ The repository contains three folders:
 cd src
 python3 QuaterGCN.py --dataset dataset_nodes500_alpha0.05_beta0.2
 python3 Edge_QuaterGCN.py --dataset dataset_nodes500_alpha0.05_beta0.2 --task three_class_digraph --noisy
-python3 sign_link_prediction.py --dataset=bitcoin_alpha --task=four_class_signed_digraph --num_classes=4 --num_layers=2 --epochs=300 --dropout=0.5 --lr=1e-2
-python3 sign_link_prediction.py --dataset=bitcoin_alpha --task=five_class_signed_digraph --num_classes=5 --num_layers=2 --epochs=300 --dropout=0.5 --lr=1e-2
+python3 sing_link_prediction.py --dataset=bitcoin_alpha --task=four_class_signed_digraph --num_classes=4 --num_layers=2 --epochs=300 --dropout=0.5 --lr=1e-2
+python3 sing_link_prediction.py --dataset=bitcoin_alpha --task=five_class_signed_digraph --num_classes=5 --num_layers=2 --epochs=300 --dropout=0.5 --lr=1e-2
 ```
 
 
